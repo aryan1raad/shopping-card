@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100..900;1,100..900&family=Vazirmatn:wght@100..900&display=swap"
+        rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="mainie">
+        <div class="leftie">
+            <div class="grid-cont">
+
+                <!-- example single in-grid (repeat for each product) -->
+                <div class="in-grid" data-id="iphone-14-pro-1tb-Silver" data-name="Apple iPhone 14 Pro 1TB Silver (MQ2V3)"
+                    data-price="1499" data-img="./Recources/Iphones/Iphone 14 pro 1.png">
+                    <div class="card2"><img src="./Recources/Iphones/Iphone 14 pro 1.png" alt="iPhone 14 Pro"></div>
+                    <div class="card3">
+                        <p>Apple iPhone 14 Pro 1TB Silver </br>(MQ2V3)</br></p>
+                    </div>
+                    <div class="card4"><strong>$1499</strong></div>
+                    <div class="card5"><a><button class="btnp" type="button">Buy Now</button></a></div>
+                </div>
+                <div class="in-grid" data-id="iphone-11-normal-128GB-white" data-name="Apple iPhone 11 128GB White (MQ233)"
+                    data-price="1499" data-img="./Recources/Iphones/Iphone 2.png">
+                    <div class="card2"><img src="./Recources/Iphones/Iphone 2.png" alt="iPhone 14 Pro"></div>
+                    <div class="card3">
+                        <p>Apple iPhone 11 128GB White </br>(MQ2V3)</br></p>
+                    </div>
+                    <div class="card4"><strong>$510</strong></div>
+                    <div class="card5"><a><button class="btnp" type="button">Buy Now</button></a></div>
+                </div>
+                <div class="in-grid" data-id="iphone-14-pro-1tb-gold" data-name="Apple iPhone 14 Pro 1TB Gold (MQ2V3)"
+                    data-price="1399" data-img="./Recources/Iphones/Iphone 3.png">
+                    <div class="card2"><img src="./Recources/Iphones/Iphone 3.png" alt="iPhone 14 Pro"></div>
+                    <div class="card3">
+                        <p>Apple iPhone 14 Pro 1TB Gold </br>(MQ2V3)</br></p>
+                    </div>
+                    <div class="card4"><strong>$1399</strong></div>
+                    <div class="card5"><a><button class="btnp" type="button">Buy Now</button></a></div>
+                </div>
+               
+            </div>
+        </div>
+        <div class="rightie">
+            <div class="top-right">
+                <div
+                    style="background-color: #0055ff; color: white; padding: 2rem 1rem; border-radius: 1rem 1rem  0 0; font-weight: 500;">
+                    Added Products</div>
+                <div class="addeds">
+                    <div class="tedad"
+                        style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                        1</div>
+                    <div class="esm">Apple iPhone 14 Pro 1TB Gold
+                        (MQ2V3)</div>
+                    <div class="gheymat">$1499
+                    </div>
+                    <div class="math" style="display: flex; gap: 0.5rem; height: 2rem; width:max-content;">
+                        <div class="jam" style="height: 100%; border: #0055ff 3px;"><img src="/Recources/مخلفات/add.png"
+                                style="height: 100%;" alt=""></div>
+                        <div class="kasr" style="display: flex;"><img src="/Recources/مخلفات/icons8-minus-100.png"
+                                style="height: 100%; scale: 1.5;" alt=""></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <script>
+        // Products data structure
+        const products = [
+            {
+                id: 'iphone-14-pro-1tb-Silver',
+                name: 'Apple iPhone 14 Pro 1TB Silver (MQ2V3)',
+                price: 1499,
+                image: './Recources/Iphones/Iphone 14 pro 1.png'
+            },
+            {
+                id: 'iphone-11-normal-128GB-white',
+                name: 'Apple iPhone 11 128GB White (MQ233)',
+                price: 510,
+                image: './Recources/Iphones/Iphone 2.png'
+            },
+            {
+                id: 'iphone-14-pro-1tb-gold',
+                name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)',
+                price: 1399,
+                image: './Recources/Iphones/Iphone 3.png'
+            }
+        ];
+
+        // Shopping cart state
+        let cart = new Map();
+
+        // Utility function to format price
+        const formatPrice = (price) => `$${price}`;
+
+        // Function to update cart UI
+        const updateCartUI = () => {
+            const cartContainer = document.querySelector('.top-right');
+            const addedProductsDiv = cartContainer.querySelector('.addeds');
+            
+            // Clear existing items
+            while (addedProductsDiv.nextSibling) {
+                addedProductsDiv.nextSibling.remove();
+            }
+
+            cart.forEach((quantity, productId) => {
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'addeds';
+                    itemDiv.innerHTML = `
+                        <div class="tedad" style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                            ${quantity}
+                        </div>
+                        <div class="esm">${product.name}</div>
+                        <div class="gheymat">${formatPrice(product.price * quantity)}</div>
+                        <div class="math" style="display: flex; gap: 0.5rem; height: 2rem; width:max-content;">
+                            <div class="jam" data-product-id="${product.id}">
+                                <img src="/Recources/مخلفات/add.png" style="height: 100%;" alt="add">
+                            </div>
+                            <div class="kasr" data-product-id="${product.id}">
+                                <img src="/Recources/مخلفات/icons8-minus-100.png" style="height: 100%; scale: 1.5;" alt="subtract">
+                            </div>
+                        </div>
+                    `;
+                    cartContainer.appendChild(itemDiv);
+                }
+            });
+        };
+
+        // Event delegation for all product-related clicks
+        document.addEventListener('click', (e) => {
+            // Buy Now button clicks
+            if (e.target.classList.contains('btnp')) {
+                const productDiv = e.target.closest('.in-grid');
+                const productId = productDiv.dataset.id;
+                
+                // Add to cart
+                const currentQuantity = cart.get(productId) || 0;
+                cart.set(productId, currentQuantity + 1);
+                
+                updateCartUI();
+            }
+
+            // Add quantity
+            if(e.target.closest('.jam')){
+                const productId = e.target.closest('.jam').dataset.productId;
+                const currentQuantity = cart.get(productId)+1;
+                cart.set(productId , currentQuantity+1 )
+                updateCartUI();
+            }
+
+
+            // Subtract quantity
+            if (e.target.closest('.kasr')) {
+                const productId = e.target.closest('.kasr').dataset.productId;
+                const currentQuantity = cart.get(productId) || 0;
+                if (currentQuantity > 1) {
+                    cart.set(productId, currentQuantity - 1);
+                } else {
+                    cart.delete(productId);
+                }
+                updateCartUI();
+            }
+        });
+
+        // Optional: Save cart to localStorage
+        const saveCart = () => {
+            localStorage.setItem('cart', JSON.stringify(Array.from(cart.entries())));
+        };
+
+        // Optional: Load cart from localStorage
+        const loadCart = () => {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = new Map(JSON.parse(savedCart));
+                updateCartUI();
+            }
+        };
+
+        // Load cart when page loads
+        loadCart();
+    </script>
+</body>
+
+</html>
+<style>
+    * {
+        font-family: 'Inter';
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .mainie {
+        padding: 20px 20px;
+        display: flex;
+    }
+
+    .leftie {
+        flex: 0.4;
+    }
+
+    .rightie {
+        flex: 0.6;
+        display: flex;
+        flex-direction: column;
+        margin-top: 4rem;
+    }
+
+    .top-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .addeds {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 6rem;
+        padding: 0.5rem 3rem;
+        border-bottom: 2px solid transparent;
+        /* keep width but transparent color */
+        border-image: linear-gradient(to right,
+                rgba(0, 43, 130, 0) 0%,
+                rgba(0, 43, 130, 0.25) 25%,
+                #a3c2ffb9 50%,
+                rgba(0, 43, 130, 0.25) 75%,
+                rgba(0, 43, 130, 0) 100%) 1;
+    }
+
+    .grid-cont {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+            display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+    
+
+    /*بخش مهم ریسپانسیو بودن به این قسمت وابسته است*/
+    .in-grid {
+        max-width: 268px;
+        min-width: 150px;
+        padding: 4rem 0 1rem 0;
+        background: white;
+        border-radius: 12px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.7rem;
+        position: relative;
+            width: 100%;
+    max-width: 320px; /* برای محدود کردن در نمایش بزرگ */
+    }
+
+    strong {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-top: 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .card2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card2 img {
+        width: auto;
+        height: 170px;
+    }
+
+    .card3 {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        font-weight: 400;
+        text-align: center;
+        padding-top: 20px;
+
+    }
+
+    .btnp {
+        color: #EDEDED;
+        border: 1px solid #0055ff;
+        background-color: #0055ff;
+        border-radius: 8px;
+        font-size: 13px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 11px 50px;
+        margin-bottom: 0.3rem;
+    }
+
+    .btnp:hover {
+        background-color: white;
+        color: #0055ff;
+        border: 1px solid #0055ff;
+    }
+
+
+</style>
