@@ -51,21 +51,7 @@
                 <div
                     style="background-color: #0055ff; color: white; padding: 2rem 1rem; border-radius: 1rem 1rem  0 0; font-weight: 500;">
                     Added Products</div>
-                <div class="addeds">
-                    <div class="tedad"
-                        style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
-                        1</div>
-                    <div class="esm">Apple iPhone 14 Pro 1TB Gold
-                        (MQ2V3)</div>
-                    <div class="gheymat">$1499
-                    </div>
-                    <div class="math" style="display: flex; gap: 0.5rem; height: 2rem; width:max-content;">
-                        <div class="jam" style="height: 100%; border: #0055ff 3px;"><img src="/Recources/مخلفات/add.png"
-                                style="height: 100%;" alt=""></div>
-                        <div class="kasr" style="display: flex;"><img src="/Recources/مخلفات/icons8-minus-100.png"
-                                style="height: 100%; scale: 1.5;" alt=""></div>
-                    </div>
-                </div>
+
 
             </div>
         </div>
@@ -73,6 +59,12 @@
     </div>
 
 
+    <main style="
+        width: 100px;
+        height: 100px;
+        text-align: center;
+        background: repeating-linear-gradient(to right ,black, white , black 50%, red 100%);
+    ">Hello World</main>
 
 
 
@@ -80,124 +72,199 @@
 
 
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ---- Data ----
+  const products = [
+    { id: 'iphone-14-pro-1tb-Silver', name: 'Apple iPhone 14 Pro 1TB Silver (MQ2V3)', price: 1499, image: './Recources/Iphones/Iphone 14 pro 1.png' },
+    { id: 'iphone-11-normal-128GB-white', name: 'Apple iPhone 11 128GB White (MQ233)', price: 510, image: './Recources/Iphones/Iphone 2.png' },
+    { id: 'iphone-14-pro-1tb-gold', name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)', price: 1399, image: './Recources/Iphones/Iphone 3.png' }
+  ];
 
-    <script>
-        // Products data structure
-        const products = [
-            {
-                id: 'iphone-14-pro-1tb-Silver',
-                name: 'Apple iPhone 14 Pro 1TB Silver (MQ2V3)',
-                price: 1499,
-                image: './Recources/Iphones/Iphone 14 pro 1.png'
-            },
-            {
-                id: 'iphone-11-normal-128GB-white',
-                name: 'Apple iPhone 11 128GB White (MQ233)',
-                price: 510,
-                image: './Recources/Iphones/Iphone 2.png'
-            },
-            {
-                id: 'iphone-14-pro-1tb-gold',
-                name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)',
-                price: 1399,
-                image: './Recources/Iphones/Iphone 3.png'
-            }
-        ];
+  // ---- State ----
+  let cart = new Map(); // productId => qty
 
-        // Shopping cart state
-        let cart = new Map();
+  // ---- Selectors ----
+  const productsGrid = document.querySelector('.grid-cont');
+  const rightColumn = document.querySelector('.top-right'); // contains header + we will render items below it
 
-        // Utility function to format price
-        const formatPrice = (price) => `$${price}`;
+  // Create a dedicated container for cart items and total inside .top-right if not present
+  let cartList = rightColumn.querySelector('.cart-list');
+  let cartTotalEl = rightColumn.querySelector('.cart-total');
+  if (!cartList) {
+    cartList = document.createElement('div');
+    cartList.className = 'cart-list';
+    cartList.style.display = 'flex';
+    cartList.style.flexDirection = 'column';
+    cartList.style.gap = '0.6rem';
+    rightColumn.appendChild(cartList);
+  }
+  if (!cartTotalEl) {
+    cartTotalEl = document.createElement('div');
+    cartTotalEl.className = 'cart-total';
+    cartTotalEl.style.marginTop = '1rem';
+    cartTotalEl.style.fontWeight = '600';
+    rightColumn.appendChild(cartTotalEl);
+  }
 
-        // Function to update cart UI
-        const updateCartUI = () => {
-            const cartContainer = document.querySelector('.top-right');
-            const addedProductsDiv = cartContainer.querySelector('.addeds');
-            
-            // Clear existing items
-            while (addedProductsDiv.nextSibling) {
-                addedProductsDiv.nextSibling.remove();
-            }
+  // --- Toast (minimal) ---
+  const toast = document.createElement('div');
+  toast.id = 'mini-toast';
+  toast.style.position = 'fixed';
+  toast.style.right = '20px';
+  toast.style.bottom = '20px';
+  toast.style.padding = '10px 14px';
+  toast.style.background = '#111';
+  toast.style.color = '#fff';
+  toast.style.borderRadius = '8px';
+  toast.style.opacity = '0';
+  toast.style.transform = 'translateY(12px)';
+  toast.style.transition = 'opacity .25s, transform .25s';
+  toast.style.zIndex = '9999';
+  document.body.appendChild(toast);
+  let toastTimer = null;
+  function showToast(txt) {
+    toast.textContent = txt;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(12px)';
+    }, 1200);
+  }
 
-            cart.forEach((quantity, productId) => {
-                const product = products.find(p => p.id === productId);
-                if (product) {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'addeds';
-                    itemDiv.innerHTML = `
-                        <div class="tedad" style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
-                            ${quantity}
-                        </div>
-                        <div class="esm">${product.name}</div>
-                        <div class="gheymat">${formatPrice(product.price * quantity)}</div>
-                        <div class="math" style="display: flex; gap: 0.5rem; height: 2rem; width:max-content;">
-                            <div class="jam" data-product-id="${product.id}">
-                                <img src="/Recources/مخلفات/add.png" style="height: 100%;" alt="add">
-                            </div>
-                            <div class="kasr" data-product-id="${product.id}">
-                                <img src="/Recources/مخلفات/icons8-minus-100.png" style="height: 100%; scale: 1.5;" alt="subtract">
-                            </div>
-                        </div>
-                    `;
-                    cartContainer.appendChild(itemDiv);
-                }
-            });
-        };
+  // ---- Persistence ----
+  function saveCart() {
+    try {
+      const arr = Array.from(cart.entries()); // [ [id, qty], ... ]
+      localStorage.setItem('cart', JSON.stringify(arr));
+    } catch (err) {
+      console.warn('saveCart failed', err);
+    }
+  }
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem('cart');
+      if (!raw) return;
+      const arr = JSON.parse(raw);
+      cart = new Map(arr);
+    } catch (err) {
+      console.warn('loadCart failed, clearing', err);
+      localStorage.removeItem('cart');
+      cart = new Map();
+    }
+  }
 
-        // Event delegation for all product-related clicks
-        document.addEventListener('click', (e) => {
-            // Buy Now button clicks
-            if (e.target.classList.contains('btnp')) {
-                const productDiv = e.target.closest('.in-grid');
-                const productId = productDiv.dataset.id;
-                
-                // Add to cart
-                const currentQuantity = cart.get(productId) || 0;
-                cart.set(productId, currentQuantity + 1);
-                
-                updateCartUI();
-            }
+  // ---- Rendering ----
+  const fmt = n => `$${Number(n).toFixed(2)}`;
 
-            // Add quantity
-            if(e.target.closest('.jam')){
-                const productId = e.target.closest('.jam').dataset.productId;
-                const currentQuantity = cart.get(productId)+1;
-                cart.set(productId , currentQuantity+1 )
-                updateCartUI();
-            }
+  function renderCartUI() {
+    // clear previous list
+    cartList.innerHTML = '';
 
+    if (cart.size === 0) {
+      const empty = document.createElement('div');
+      empty.textContent = 'Cart is empty';
+      empty.style.opacity = '.6';
+      cartList.appendChild(empty);
+      cartTotalEl.textContent = `Total: ${fmt(0)}`;
+      return;
+    }
 
-            // Subtract quantity
-            if (e.target.closest('.kasr')) {
-                const productId = e.target.closest('.kasr').dataset.productId;
-                const currentQuantity = cart.get(productId) || 0;
-                if (currentQuantity > 1) {
-                    cart.set(productId, currentQuantity - 1);
-                } else {
-                    cart.delete(productId);
-                }
-                updateCartUI();
-            }
-        });
+    let total = 0;
+    cart.forEach((qty, productId) => {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      const linePrice = product.price * qty;
+      total += linePrice;
 
-        // Optional: Save cart to localStorage
-        const saveCart = () => {
-            localStorage.setItem('cart', JSON.stringify(Array.from(cart.entries())));
-        };
+      const item = document.createElement('div');
+      item.className = 'addeds'; // reuse your style if desired
+      item.dataset.productId = productId;
+      item.style.display = 'flex';
+      item.style.justifyContent = 'space-around';
+      item.style.alignItems = 'center';
+      item.style.gap = '1rem';
+      item.style.padding = '.5rem 1rem';
 
-        // Optional: Load cart from localStorage
-        const loadCart = () => {
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                cart = new Map(JSON.parse(savedCart));
-                updateCartUI();
-            }
-        };
+      item.innerHTML = `
+        <div class="tedad" style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+          ${qty}
+        </div>
+        <div class="esm" style="flex:1">${product.name}</div>
+        <div class="gheymat">${fmt(linePrice)}</div>
+        <div class="math" style="display:flex;gap:.5rem;align-items:center;">
+          <button class="btn-inc" data-id="${productId}" aria-label="increase">+</button>
+          <button class="btn-dec" data-id="${productId}" aria-label="decrease">-</button>
+          <button class="btn-remove" data-id="${productId}" aria-label="remove">Remove</button>
+        </div>
+      `;
+      cartList.appendChild(item);
+    });
 
-        // Load cart when page loads
-        loadCart();
-    </script>
+    cartTotalEl.textContent = `Total: ${fmt(total)}`;
+    saveCart();
+  }
+
+  // ---- Cart operations ----
+  function addProductToCart(productId, amount = 1) {
+    const current = cart.get(productId) || 0;
+    cart.set(productId, current + amount);
+    renderCartUI();
+    const product = products.find(p => p.id === productId);
+    showToast(product ? `${product.name} added` : 'Added');
+  }
+  function decProductInCart(productId) {
+    const current = cart.get(productId) || 0;
+    if (current <= 1) {
+      cart.delete(productId);
+    } else {
+      cart.set(productId, current - 1);
+    }
+    renderCartUI();
+  }
+  function removeProductFromCart(productId) {
+    cart.delete(productId);
+    renderCartUI();
+  }
+
+  // ---- Wire product buttons via delegation (safe) ----
+  productsGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.btnp');
+    if (!btn) return;
+    const productDiv = btn.closest('.in-grid');
+    if (!productDiv) return;
+    const id = productDiv.dataset.id;
+    addProductToCart(id, 1);
+  });
+
+  // ---- Wire cart actions via delegation ----
+  cartList.addEventListener('click', (e) => {
+    const inc = e.target.closest('.btn-inc');
+    const dec = e.target.closest('.btn-dec');
+    const rem = e.target.closest('.btn-remove');
+
+    if (inc) {
+      addProductToCart(inc.dataset.id, 1);
+      return;
+    }
+    if (dec) {
+      decProductInCart(dec.dataset.id);
+      return;
+    }
+    if (rem) {
+      removeProductFromCart(rem.dataset.id);
+      return;
+    }
+  });
+
+  // ---- init: load & render ----
+  loadCart();
+  renderCartUI();
+});
+</script>
+
 </body>
 
 </html>
@@ -323,5 +390,17 @@
         border: 1px solid #0055ff;
     }
 
+    /* tiny button styles for inc/dec/remove and toast fallback */
+.btn-inc, .btn-dec, .btn-remove {
+  background: transparent;
+  border: 1px solid #0055ff;
+  color: #0055ff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#mini-toast {
+  font-size: 0.95rem;
+}
 
 </style>
