@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100..900;1,100..900&family=Vazirmatn:wght@100..900&display=swap"
+        rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="mainie">
+        <div class="leftie">
+            <div class="grid-cont">
+
+                <!-- example single in-grid (repeat for each product) -->
+                <div class="in-grid" data-id="iphone-14-pro-1tb-Silver" data-name="Apple iPhone 14 Pro 1TB Silver (MQ2V3)"
+                    data-price="1499" data-img="./Recources/Iphones/Iphone 14 pro 1.png">
+                    <div class="card2"><img src="./Recources/Iphones/Iphone 14 pro 1.png" alt="iPhone 14 Pro"></div>
+                    <div class="card3">
+                        <p>Apple iPhone 14 Pro 1TB Silver </br>(MQ2V3)</br></p>
+                    </div>
+                    <div class="card4"><strong>$1499</strong></div>
+                    <div class="card5"><a><button class="btnp" type="button">Buy Now</button></a></div>
+                </div>
+                <div class="in-grid" data-id="iphone-11-normal-128GB-white" data-name="Apple iPhone 11 128GB White (MQ233)"
+                    data-price="1499" data-img="./Recources/Iphones/Iphone 2.png">
+                    <div class="card2"><img src="./Recources/Iphones/Iphone 2.png" alt="iPhone 14 Pro"></div>
+                    <div class="card3">
+                        <p>Apple iPhone 11 128GB White </br>(MQ2V3)</br></p>
+                    </div>
+                    <div class="card4"><strong>$510</strong></div>
+                    <div class="card5"><a><button class="btnp" type="button">Buy Now</button></a></div>
+                </div>
+                <div class="in-grid" data-id="iphone-14-pro-1tb-gold" data-name="Apple iPhone 14 Pro 1TB Gold (MQ2V3)"
+                    data-price="1399" data-img="./Recources/Iphones/Iphone 3.png">
+                    <div class="card2"><img src="./Recources/Iphones/Iphone 3.png" alt="iPhone 14 Pro"></div>
+                    <div class="card3">
+                        <p>Apple iPhone 14 Pro 1TB Gold </br>(MQ2V3)</br></p>
+                    </div>
+                    <div class="card4"><strong>$1399</strong></div>
+                    <div class="card5"><a><button class="btnp" type="button">Buy Now</button></a></div>
+                </div>
+               
+            </div>
+        </div>
+        <div class="rightie">
+            <div class="top-right">
+                <div
+                    style="background-color: #0055ff; color: white; padding: 2rem 1rem; border-radius: 1rem 1rem  0 0; font-weight: 500;">
+                    Added Products</div>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <main style="
+        width: 100px;
+        height: 100px;
+        text-align: center;
+        background: repeating-linear-gradient(to right ,black, white , black 50%, red 100%);
+    ">Hello World</main>
+
+
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ---- Data ----
+  const products = [
+    { id: 'iphone-14-pro-1tb-Silver', name: 'Apple iPhone 14 Pro 1TB Silver (MQ2V3)', price: 1499, image: './Recources/Iphones/Iphone 14 pro 1.png' },
+    { id: 'iphone-11-normal-128GB-white', name: 'Apple iPhone 11 128GB White (MQ233)', price: 510, image: './Recources/Iphones/Iphone 2.png' },
+    { id: 'iphone-14-pro-1tb-gold', name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)', price: 1399, image: './Recources/Iphones/Iphone 3.png' }
+  ];
+
+  // ---- State ----
+  let cart = new Map(); // productId => qty
+
+  // ---- Selectors ----
+  const productsGrid = document.querySelector('.grid-cont');
+  const rightColumn = document.querySelector('.top-right'); // contains header + we will render items below it
+
+  // Create a dedicated container for cart items and total inside .top-right if not present
+  let cartList = rightColumn.querySelector('.cart-list');
+  let cartTotalEl = rightColumn.querySelector('.cart-total');
+  if (!cartList) {
+    cartList = document.createElement('div');
+    cartList.className = 'cart-list';
+    cartList.style.display = 'flex';
+    cartList.style.flexDirection = 'column';
+    cartList.style.gap = '0.6rem';
+    rightColumn.appendChild(cartList);
+  }
+  if (!cartTotalEl) {
+    cartTotalEl = document.createElement('div');
+    cartTotalEl.className = 'cart-total';
+    cartTotalEl.style.marginTop = '1rem';
+    cartTotalEl.style.fontWeight = '600';
+    rightColumn.appendChild(cartTotalEl);
+  }
+
+  // --- Toast (minimal) ---
+  const toast = document.createElement('div');
+  toast.id = 'mini-toast';
+  toast.style.position = 'fixed';
+  toast.style.right = '20px';
+  toast.style.bottom = '20px';
+  toast.style.padding = '10px 14px';
+  toast.style.background = '#111';
+  toast.style.color = '#fff';
+  toast.style.borderRadius = '8px';
+  toast.style.opacity = '0';
+  toast.style.transform = 'translateY(12px)';
+  toast.style.transition = 'opacity .25s, transform .25s';
+  toast.style.zIndex = '9999';
+  document.body.appendChild(toast);
+  let toastTimer = null;
+  function showToast(txt) {
+    toast.textContent = txt;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(12px)';
+    }, 1200);
+  }
+
+  // ---- Persistence ----
+  function saveCart() {
+    try {
+      const arr = Array.from(cart.entries()); // [ [id, qty], ... ]
+      localStorage.setItem('cart', JSON.stringify(arr));
+    } catch (err) {
+      console.warn('saveCart failed', err);
+    }
+  }
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem('cart');
+      if (!raw) return;
+      const arr = JSON.parse(raw);
+      cart = new Map(arr);
+    } catch (err) {
+      console.warn('loadCart failed, clearing', err);
+      localStorage.removeItem('cart');
+      cart = new Map();
+    }
+  }
+
+  // ---- Rendering ----
+  const fmt = n => `$${Number(n).toFixed(2)}`;
+
+  function renderCartUI() {
+    // clear previous list
+    cartList.innerHTML = '';
+
+    if (cart.size === 0) {
+      const empty = document.createElement('div');
+      empty.textContent = 'Cart is empty';
+      empty.style.opacity = '.6';
+      cartList.appendChild(empty);
+      cartTotalEl.textContent = `Total: ${fmt(0)}`;
+      return;
+    }
+
+    let total = 0;
+    cart.forEach((qty, productId) => {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      const linePrice = product.price * qty;
+      total += linePrice;
+
+      const item = document.createElement('div');
+      item.className = 'addeds'; // reuse your style if desired
+      item.dataset.productId = productId;
+      item.style.display = 'flex';
+      item.style.justifyContent = 'space-around';
+      item.style.alignItems = 'center';
+      item.style.gap = '1rem';
+      item.style.padding = '.5rem 1rem';
+
+      item.innerHTML = `
+        <div class="tedad" style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+          ${qty}
+        </div>
+        <div class="esm" style="flex:1">${product.name}</div>
+        <div class="gheymat">${fmt(linePrice)}</div>
+        <div class="math" style="display:flex;gap:.5rem;align-items:center;">
+          <button class="btn-inc" data-id="${productId}" aria-label="increase">+</button>
+          <button class="btn-dec" data-id="${productId}" aria-label="decrease">-</button>
+          <button class="btn-remove" data-id="${productId}" aria-label="remove">Remove</button>
+        </div>
+      `;
+      cartList.appendChild(item);
+    });
+
+    cartTotalEl.textContent = `Total: ${fmt(total)}`;
+    saveCart();
+  }
+
+  // ---- Cart operations ----
+  function addProductToCart(productId, amount = 1) {
+    const current = cart.get(productId) || 0;
+    cart.set(productId, current + amount);
+    renderCartUI();
+    const product = products.find(p => p.id === productId);
+    showToast(product ? `${product.name} added` : 'Added');
+  }
+  function decProductInCart(productId) {
+    const current = cart.get(productId) || 0;
+    if (current <= 1) {
+      cart.delete(productId);
+    } else {
+      cart.set(productId, current - 1);
+    }
+    renderCartUI();
+  }
+  function removeProductFromCart(productId) {
+    cart.delete(productId);
+    renderCartUI();
+  }
+
+  // ---- Wire product buttons via delegation (safe) ----
+  productsGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.btnp');
+    if (!btn) return;
+    const productDiv = btn.closest('.in-grid');
+    if (!productDiv) return;
+    const id = productDiv.dataset.id;
+    addProductToCart(id, 1);
+  });
+
+  // ---- Wire cart actions via delegation ----
+  cartList.addEventListener('click', (e) => {
+    const inc = e.target.closest('.btn-inc');
+    const dec = e.target.closest('.btn-dec');
+    const rem = e.target.closest('.btn-remove');
+
+    if (inc) {
+      addProductToCart(inc.dataset.id, 1);
+      return;
+    }
+    if (dec) {
+      decProductInCart(dec.dataset.id);
+      return;
+    }
+    if (rem) {
+      removeProductFromCart(rem.dataset.id);
+      return;
+    }
+  });
+
+  // ---- init: load & render ----
+  loadCart();
+  renderCartUI();
+});
+</script>
+
+</body>
+
+</html>
+<style>
+    * {
+        font-family: 'Inter';
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .mainie {
+        padding: 20px 20px;
+        display: flex;
+    }
+
+    .leftie {
+        flex: 0.4;
+    }
+
+    .rightie {
+        flex: 0.6;
+        display: flex;
+        flex-direction: column;
+        margin-top: 4rem;
+    }
+
+    .top-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .addeds {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 6rem;
+        padding: 0.5rem 3rem;
+        border-bottom: 2px solid transparent;
+        /* keep width but transparent color */
+        border-image: linear-gradient(to right,
+                rgba(0, 43, 130, 0) 0%,
+                rgba(0, 43, 130, 0.25) 25%,
+                #a3c2ffb9 50%,
+                rgba(0, 43, 130, 0.25) 75%,
+                rgba(0, 43, 130, 0) 100%) 1;
+    }
+
+    .grid-cont {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+            display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+    
+
+    /*بخش مهم ریسپانسیو بودن به این قسمت وابسته است*/
+    .in-grid {
+        max-width: 268px;
+        min-width: 150px;
+        padding: 4rem 0 1rem 0;
+        background: white;
+        border-radius: 12px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.7rem;
+        position: relative;
+            width: 100%;
+    max-width: 320px; /* برای محدود کردن در نمایش بزرگ */
+    }
+
+    strong {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-top: 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .card2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card2 img {
+        width: auto;
+        height: 170px;
+    }
+
+    .card3 {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        font-weight: 400;
+        text-align: center;
+        padding-top: 20px;
+
+    }
+
+    .btnp {
+        color: #EDEDED;
+        border: 1px solid #0055ff;
+        background-color: #0055ff;
+        border-radius: 8px;
+        font-size: 13px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 11px 50px;
+        margin-bottom: 0.3rem;
+    }
+
+    .btnp:hover {
+        background-color: white;
+        color: #0055ff;
+        border: 1px solid #0055ff;
+    }
+
+    /* tiny button styles for inc/dec/remove and toast fallback */
+.btn-inc, .btn-dec, .btn-remove {
+  background: transparent;
+  border: 1px solid #0055ff;
+  color: #0055ff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#mini-toast {
+  font-size: 0.95rem;
+}
+
+</style>
