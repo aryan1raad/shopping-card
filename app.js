@@ -58,43 +58,7 @@ document.addEventListener('click', (e) => {
 
     }
 });
-function updateUI() {
-  const cartContainer = document.querySelector(".top-right");
-  const addedProductsDiv = cartContainer.querySelector(".addeds");
 
-    //حذف دیو های برادر موجود
-    while (addedProductsDiv.nextSibling) {
-        addedProductsDiv.nextSibling.remove();
-    }
-
-    //پیدا کردن محصول مورد نظر در کارت که قبلا ست شده است و قرار دادن در دیوی که میسازیم و بعد در آن قرار میدهیم
-    cart.forEach ((quantity, productId) => {
-        const mahsooleGerefte = products.find(p => p.id === productId);
-        if (mahsooleGerefte) {
-       const itemDiv = document.createElement("div");
-       itemDiv.className = "addeds";
-       itemDiv.innerHTML = `
-                         <div class="tedad" style="border: 10px #0055ff solid; width: 4rem; aspect-ratio: 1/1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
-                             ${quantity}
-                         </div>
-                         <div class="esm">${mahsooleGerefte.name}</div>
-                         <div class="gheymat">${formatPrice(
-                           mahsooleGerefte.price * quantity
-                         )}</div>
-                         <div class="math" style="display: flex; gap: 0.5rem; height: 2rem; width:max-content;">
-                             <div class="jam" data-product-id="${mahsooleGerefte.id}">
-                                 <img src="/Recources/مخلفات/add.png" style="height: 100%;" alt="add">
-                             </div>
-                             <div class="kasr" data-product-id="${mahsooleGerefte.id}">
-                                 <img src="/Recources/مخلفات/icons8-minus-100.png" style="height: 100%; scale: 1.5;" alt="subtract">
-                             </div>
-                         </div>
-                     `;
-       cartContainer.appendChild(itemDiv);
-     }
-    }
-  )
-}
 function updateUI() {
   const cartContainer = document.querySelector(".top-right");
   if (!cartContainer) return;
